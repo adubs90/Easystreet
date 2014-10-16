@@ -1,0 +1,126 @@
+/*
+ * TCSS 305 - Autumn 2011 
+ * Homework 2: Easy Street 
+ * Author: Alex Stringham 
+ * UWNetID: ats3216
+ */
+
+import java.util.Map;
+
+/**
+ * The Bicycle child class for the Easy Street program.
+ * 
+ * @author Alex
+ * @version Oct 13 2011
+ * 
+ */
+public class Bicycle extends Vehicles
+{
+
+  /**
+   * The death time.
+   */
+  private static final int DEATH_TIME = 20;
+
+  /**
+   * @param the_x sets the x-coordinate.
+   * @param the_y sets the y-coordinate.
+   * @param the_dir sets the direction of the bicycle.
+   * @param the_terrain sets the terrain which the bicycle starts on.
+   */
+
+  public Bicycle(final int the_x, final int the_y, final Direction the_dir,
+                 final Terrain the_terrain)
+  {
+    super(the_x, the_y, the_dir, the_terrain, DEATH_TIME, "Bicycle");
+  }
+
+  /**
+   * @param the_terrain sets the terrain in which bicycles drive on.
+   * @param the_light sets the color of the light in which bicycles can drive
+   *          through.
+   * @return returns the terrains and lights which bicycles can drive on.
+   */
+  public final boolean canPass(final Terrain the_terrain, final Light the_light)
+  {
+    boolean bike_can_pass = false;
+    if (the_terrain == Terrain.STREET || the_terrain == Terrain.TRAIL)
+    {
+      bike_can_pass = true;
+    }
+    else if (the_terrain == Terrain.LIGHT && the_light == Light.GREEN)
+    {
+      bike_can_pass = true;
+    }
+    return bike_can_pass;
+  }
+
+  /**
+   * @param the_neighbors sets type of terrain is adjacent to the bicycle at
+   *          current direction.
+   * @param the_light sets how a bicycle reacts when coming up to a light.
+   * @return returns the direction in which the bicycle moves after hitting an
+   *         intersection.
+   */
+
+  public final Direction chooseDirection(final Map<Direction, Terrain> the_neighbors,
+                                         final Light the_light)
+  {
+    Direction bike_direction = getDirection();
+
+    if (the_neighbors.get(bike_direction) == Terrain.STREET)
+    {
+      bike_direction = turnToTrail(the_neighbors);
+    }
+
+    if (the_neighbors.get(bike_direction) != Terrain.STREET || the_light != Light.RED ||
+        the_light != Light.YELLOW)
+    {
+      final Direction[] car_array =
+          new Direction[] {bike_direction, bike_direction.left(), bike_direction.right(),
+              bike_direction.reverse()};
+
+      final int direction_num = car_array.length;
+
+      for (int i = 0; i < direction_num; i++)
+      {
+        final Direction new_direction = car_array[i];
+
+        if (canPass((Terrain) the_neighbors.get(new_direction), the_light))
+        {
+          return new_direction;
+        }
+
+      }
+    }
+    while (the_neighbors.get(bike_direction) == Terrain.LIGHT && the_light == Light.RED)
+    {
+      bike_direction = Direction.CENTER;
+    }
+    return bike_direction;
+
+  }
+
+  /**
+   * Tells the vehicle to turn left or right if there is a Trail to its left or
+   * right.
+   * 
+   * @param the_vehics_neighbors gives the Vehicles Direction and Terrain.
+   * @return Vehicles new direction if there is a trail.
+   */
+  public Direction turnToTrail(final Map<Direction, Terrain> the_vehics_neighbors)
+  {
+
+    Direction bikes_direction = getDirection();
+
+    if (the_vehics_neighbors.get(bikes_direction.left()) == Terrain.TRAIL)
+    {
+      bikes_direction = bikes_direction.left();
+    }
+    else if (the_vehics_neighbors.get(bikes_direction.right()) == Terrain.TRAIL)
+    {
+      bikes_direction = bikes_direction.right();
+    }
+    return bikes_direction;
+  }
+}

@@ -1,0 +1,293 @@
+/*
+ * TCSS 305 - Autumn 2011 
+
+ * Homework 2: Easy Street 
+ * Author: Alex Stringham 
+ * UWNetID: ats3216
+ */
+
+import java.util.Map;
+
+/**
+ * The Vehicles parent class that corresponds with the four child classes:
+ * Human, Bicycle, Car, and Truck.
+ * 
+ * @author Alex
+ * @version Oct 13 2011
+ * 
+ */
+public abstract class Vehicles implements Movable
+{
+
+  /**
+   * Gives the x-coordinate.
+   */
+  private int my_x_coord;
+
+  /**
+   * Gives the y-coordinate.
+   */
+  private int my_y_coord;
+
+  /**
+   * Gives the Vehicles initial direction.
+   */
+  private Direction my_direction;
+
+  /**
+   * Holds the starting direction from my_direction.
+   */
+  private final Direction my_start_dir;
+
+  /**
+   * Gives the type of terrain the Vehicle is on.
+   */
+  private final Terrain my_terrain;
+
+  /**
+   * Gives the Vehicles name.
+   */
+  private final String my_name;
+
+  /**
+   * Holds the Vehicles starting x-coordinate.
+   */
+  private final int my_start_x;
+
+  /**
+   * Gives the Vehicles starting y-coordinate.
+   */
+  private final int my_start_y;
+
+  /**
+   * Gives the amount of time the Vehicle is dead for.
+   */
+  private final int my_death_time;
+
+  /**
+   * Counts down how long the Vehicle is dead for. Holds the value 0 when
+   * vehicle is alive.
+   */
+  private int my_death_timer;
+
+  /**
+   * @param the_x Initializes the Vehicles x-coordinate.
+   * @param the_y Initializes the Vehicles y-coordinate.
+   * @param the_direction Initializes the Vehicles starting direction.
+   * @param the_terrain Initializes the Vehicles starting terrain.
+   * @param the_death_time Initializes each Vehicles respective Death Times.
+   * @param the_name Initializes the Vehicles given name.
+   */
+  public Vehicles(final int the_x, final int the_y, final Direction the_direction,
+                  final Terrain the_terrain, final int the_death_time, final String the_name)
+  {
+    my_start_x = the_x;
+    my_start_y = the_y;
+
+    my_x_coord = the_x;
+    my_y_coord = the_y;
+
+    my_direction = the_direction;
+    my_start_dir = the_direction;
+
+    my_terrain = the_terrain;
+    my_death_time = the_death_time;
+    my_death_timer = the_death_time;
+
+    my_name = the_name;
+  }
+
+  /**
+   * Checks whether a Vehicle has collided with another Vehicle.
+   * 
+   * @param a_mov_obj a specified Vehicle.
+   */
+  public void collide(final Movable a_mov_obj)
+  {
+    if ((a_mov_obj.isAlive() && isAlive()) && (a_mov_obj.getDeathTime() < my_death_time))
+    {
+      my_death_timer = 0;
+    }
+  }
+
+  /**
+   * Helper method for Trucks class.
+   * 
+   * @param the_neighbors Gives the vehicles Direction and Terrain.
+   * @param the_light Gives the current Light state.
+   * @return true or false depending on the state of the Direction, Terrain, and
+   *         Light.
+   */
+  public boolean vehicMoves(final Map<Direction, Terrain> the_neighbors, final Light the_light)
+  {
+    return the_neighbors.get(getDirection()) == Terrain.STREET ||
+           the_neighbors.get(getDirection()) == Terrain.LIGHT ||
+           the_neighbors.get(getDirection().left()) == Terrain.STREET ||
+           the_neighbors.get(getDirection().left()) == Terrain.LIGHT ||
+           the_neighbors.get(getDirection().right()) == Terrain.STREET ||
+           the_neighbors.get(getDirection().right()) == Terrain.LIGHT;
+  }
+
+  /**
+   * Retrieves a given Vehicles death time.
+   * 
+   * @return The Vehicles death time.
+   */
+  public int getDeathTime()
+  {
+
+    return my_death_time;
+  }
+
+  /**
+   * Retrieves the Vehicles name, then adds .gif if alive, or _dead if dead.
+   * 
+   * @return the suffix for the image files name.
+   */
+  public String getImageFileName()
+  {
+    final StringBuilder stringbuilder = new StringBuilder(toString());
+
+    if (!isAlive())
+    {
+      stringbuilder.append("_dead");
+    }
+    stringbuilder.append(".gif");
+
+    return stringbuilder.toString().toLowerCase();
+  }
+
+  /**
+   * Gets the direction that the Vehicle is moving.
+   * 
+   * @return Vehicles movement direction.
+   */
+  public Direction getDirection()
+  {
+
+    return my_direction;
+  }
+
+  /**
+   * Gets the Vehicles x-coordinate.
+   * 
+   * @return Vehicles x-coordinate.
+   */
+  public int x()
+  {
+
+    return my_x_coord;
+  }
+
+  /**
+   * Gets the Vehicles y-coordinate.
+   * 
+   * @return Vehicles y-coordinate.
+   */
+  public int y()
+  {
+
+    return my_y_coord;
+  }
+
+  /**
+   * Checks whether the unit is alive or not.
+   * 
+   * @return 0 because alive Vehicles have no death time.
+   */
+  public boolean isAlive()
+  {
+
+    return my_death_timer == my_death_time;
+  }
+
+  /**
+   * Only called when a Vehicle is dead. Increases their death timer once every
+   * animation.
+   * 
+   */
+  public void poke()
+  {
+
+    if (isAlive())
+    {
+      my_direction = Direction.random();
+    }
+    else
+    {
+      my_death_timer++;
+    }
+
+  }
+
+  /**
+   * Resets the Vehicles to their original Starting location and starting
+   * Direction.
+   * 
+   */
+  public void reset()
+  {
+    my_x_coord = my_start_x;
+    my_y_coord = my_start_y;
+    my_death_timer = my_death_time;
+    my_direction = my_start_dir;
+
+  }
+
+  /**
+   * Sets the Vehicles direction after it has revived or is reset.
+   * 
+   * @param the_dir The direction the Vehicle is moving.
+   * 
+   */
+  public void setDirection(final Direction the_dir)
+  {
+    my_direction = the_dir;
+
+  }
+
+  /**
+   * Sets the Vehicles x-coordinate given by x().
+   * 
+   * @param the_x The vehicles given x-coordinate.
+   * 
+   */
+  public void setX(final int the_x)
+  {
+    my_x_coord = the_x;
+
+  }
+
+  /**
+   * Sets the Vehicles x-coordinate given by y().
+   * 
+   * @param the_y The vehicles given y-coordinate.
+   * 
+   */
+  public void setY(final int the_y)
+  {
+    my_y_coord = the_y;
+
+  }
+
+  /**
+   * This returns the Initial Terrain that a Vehicle starts on.
+   * 
+   * @return A Vehicles Initial terrain.
+   */
+  public Terrain initialTerrain()
+  {
+
+    return my_terrain;
+
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public String toString()
+  {
+    return my_name;
+  }
+
+}

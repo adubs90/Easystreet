@@ -1,0 +1,30 @@
+Assignment 2 -  Easy Street
+Executive Summary 
+TCSS 305: Programming Practicum, Autumn 2011
+
+Name: Alex Stringham
+UWNetID: ats3216
+Subversion Revision Number: 14
+
+Assignment Overview
+
+Easy Street was an assignment that really got us to use inheritence in almost every aspect. We were to create a parent class that implements 
+an interface, in this case the class Movable, which would serve as our 'Vehicles' class. We were then to create child classes that all extend
+the parent class that we made so that we were not re-writing a lot of redundant code. We were to implemet each type of vehicle (human, bicycle,
+car, and truck) so that they would move in a specific  pattern, and so that they would die if a larger vehicle collided with them. We were also
+introduced to using abstract classes.
+
+
+Technical Impression
+
+This assignment was quite difficult in my opinion. Partially due to not having done much with inheritance, but mostly because of figuring out 
+the specific movement patterns for each type of vehicle. As you will see, I still was not able to get the car or the bicycle to stop at stop 
+lights, but they would rather turn to avoid it, or go in reverse. I could not figure out the algorithm for having them stop, then continue 
+forward after the lights changed to one that they could pass through. I could get them to stop in some of my tests, but was uable to get them
+to move again afterwards. Frustrating to say the least. I was however able to get the Truck and Human working completely, and i was able to
+figure out the bicycles trail preferences by use of a helper method with A LOT of if/ if else statements. Again, I thought it was cool that 
+we are finally using GUI's, since well, they're nice to look at. It took me awhile to figure out how to incorporate the Map<Direction, Terrain>
+parameter, and took me an especially long time to figure out that I had to use get() to be able to compare a direction and its surrounding terrain
+to some other type of terrain. It made things much simpler though after figuring it out. In closing, this was definitely a difficult assignment
+considering all the different directions of the vehicles in accordance to their surroundings, but definitely taught me a lot along the way. Also,
+I feel bad for those poor humans on the road... :(
